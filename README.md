@@ -2,63 +2,59 @@
 
 ## Overview
 
-A practical, documented design and implementation project based on an AZ-104 case study for xFusionCorp Ltd. The company has 3,200 employees across Singapore (2,000), Doha (1,000), and London (200), with existing on-premises infrastructure and a new Azure subscription.
+An AZ-104 practical case-study portfolio documenting a proposed hybrid Azure architecture for xFusionCorp Ltd. The company has offices in Singapore (2,000 employees), Doha (1,000) and London (200) and plans to migrate selected on-premises resources to Azure.
 
-> **Project status: Planning.** This is a case-study exercise, not a verified production deployment. The original case references two missing inventory tables. Assumptions and simulated components are explicitly identified.
+> **Status: Designed / documentation in progress.** The case references two unavailable inventory tables. This repository intentionally distinguishes given facts from assumptions and **does not claim a working production deployment**.
 
-## Goals
+## Requirements covered
 
-- Synchronise on-premises Active Directory with Microsoft Entra ID.
-- Enable MFA for the Finance department only.
-- Design Singapore ExpressRoute connectivity with dynamic route exchange (BGP).
-- Design an encrypted London-to-Azure site-to-site VPN.
-- Plan VM migration from Server1 and Server2 to Azure.
-- Allow VM3 outbound TCP 8080 to Singapore application servers.
-- Migrate App1 and App2 to Azure App Service; autoscale WebApp1 up to five instances.
-- Map `app2.xFusionCorp.com` to WebApp2 (requires domain ownership/control).
-- Alert by email when VM4 settings are modified.
-- Define a custom Azure RBAC role based on Reader.
-- Minimise costs where feasible.
+- Microsoft Entra Connect Sync for on-premises Active Directory.
+- Finance-scoped Conditional Access MFA using a dynamic security group.
+- Singapore ExpressRoute private connectivity with BGP route exchange.
+- London-to-Azure encrypted site-to-site VPN.
+- Virtual machine migration with Azure Migrate.
+- VM3 outbound TCP/8080 connectivity to Singapore application servers.
+- Azure App Service for App1 and App2, with WebApp1 autoscale (up to five).
+- Public DNS and custom hostname `app2.xFusionCorp.com` for WebApp2.
+- Azure Monitor email alert for VM4 control-plane write operations.
+- Reader-derived custom Azure RBAC role `Role1`.
+- Cost-conscious infrastructure planning.
 
-## Repository layout
+## Project documents
 
-```text
-.
-├── README.md
-├── docs/
-│   ├── 01-case-study-analysis.md
-│   ├── 02-architecture-design.md
-│   ├── 03-identity-and-governance.md
-│   ├── 04-hybrid-networking.md
-│   ├── 05-vm-migration.md
-│   ├── 06-app-service.md
-│   ├── 07-monitoring-and-alerts.md
-│   └── 08-lessons-learned.md
-├── infrastructure/
-│   ├── bicep/
-│   └── scripts/
-├── diagrams/
-└── screenshots/
-```
+| File | Contents |
+| --- | --- |
+| [Case-study analysis](docs/01-case-study-analysis.md) | Requirements, source facts and gaps |
+| [Architecture design](docs/02-architecture-design.md) | Proposed topology, assumptions and decisions |
+| [Identity and governance](docs/03-identity-and-governance.md) | AD sync, Finance MFA and custom Role1 |
+| [Hybrid networking](docs/04-hybrid-networking.md) | ExpressRoute, BGP, VPN and TCP 8080 |
+| [VM migration](docs/05-vm-migration.md) | Azure Migrate discovery through cutover |
+| [App Service](docs/06-app-service.md) | WebApp1 autoscale, WebApp2 hostname, IaC |
+| [Monitoring and alerts](docs/07-monitoring-and-alerts.md) | VM4 Activity Log email alerts |
+| [Final review / backlog](docs/08-lessons-learned.md) | Requirement audit, missing work, testing plan |
+| [Architecture diagram](diagrams/hybrid-architecture.md) | Conceptual Mermaid topology |
 
-## Implementation approach
+## Automation folders
 
-1. Analyse each requirement and record assumptions.
-2. Design the architecture and justify the Azure services chosen.
-3. Create Bicep and Azure CLI/Bash automation where feasible.
-4. Validate and test only in environments with appropriate permissions.
-5. Capture real outputs, errors, costs, and lessons learned.
+- [Bicep](infrastructure/bicep/) — illustrative App Service and Azure Monitor templates.
+- [Bash](infrastructure/scripts/) — Azure CLI inventory, DNS verification and Reader-derived role definition generator.
 
-## Evidence labels
+**Use environment-specific parameters and verify charges/permissions before deploying.** The scripts and templates have not been end-to-end tested. Some resources require tenant access, proprietary connectivity or expensive gateway services.
 
-- **Designed** — documented but not deployed.
-- **Simulated** — demonstrated with representative lab resources.
-- **Deployed and verified** — created and validated in Azure with recorded evidence.
+## Verification statuses
 
-## Security and cost
+- **Designed:** solution documented; no deployment implied.
+- **Simulated:** representative controlled lab use, with explicit assumptions.
+- **Deployed and verified:** actual resource configuration, test results and redacted evidence recorded.
 
-Never commit passwords, access keys, SAS tokens, tenant secrets, `.env` files, or real credentials. Some services (such as ExpressRoute and VPN Gateway) may be costly or unavailable in restricted labs; their production designs can be documented without claiming deployment.
+## Security
+
+Never commit `.env` secrets, credentials, access tokens, certificate private keys, VPN preshared secrets or unredacted real-user information.
 
 ## Reference
 
-Charles Pluta, *Exam Ref AZ-104 Microsoft Azure Administrator*, 2nd ed., Microsoft Press. The book is a study reference and is not redistributed in this repository.
+Charles Pluta, *Exam Ref AZ-104 Microsoft Azure Administrator*, 2nd ed., Microsoft Press. This project references the study text but does not redistribute the book.
+
+## Next steps
+
+See the [audit and engineering backlog](docs/08-lessons-learned.md), beginning with Bicep networking automation and VM3's TCP/8080 rule.
