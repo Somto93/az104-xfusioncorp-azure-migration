@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.pfx
+*.key
+*.tfstate
+*.tfstate.*
+*.log
+.DS_Store
+.vscode/
+__pycache__/
